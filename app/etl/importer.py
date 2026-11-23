@@ -11,7 +11,7 @@ from app.config import settings
 from app.etl.normalize import normalize_region, number, source_identifier
 from app.models.entities import Batch, Indicator, QualityIssue, Region, Source, Value
 
-PARSER_VERSION = "1.0.0"
+PARSER_VERSION = "1.1.0"
 FIELDS = {
     "indicator_code",
     "region",
@@ -22,17 +22,34 @@ FIELDS = {
 }
 
 
+def validate_header(header):
+    if not header or len(header) != len(set(header)) or not FIELDS.issubset(header):
+        raise ValueError(
+            "Структура файла изменилась: нужны уникальные обязательные столбцы"
+        )
+
+
+def period_date(raw):
+    if isinstance(raw, datetime):
+        if raw.hour or raw.minute or raw.second or raw.microsecond:
+            raise ValueError("Период должен быть датой без времени")
+        return raw.date()
+    if isinstance(raw, date):
+        return raw
+    return date.fromisoformat(str(raw))
+
+
 def read_rows(path):
     suffix = path.suffix.lower()
     if suffix == ".csv":
         with path.open(encoding="utf-8-sig", newline="") as handle:
             sample = handle.read(4096)
             handle.seek(0)
-            return list(
-                csv.DictReader(
-                    handle, dialect=csv.Sniffer().sniff(sample, delimiters=",;\t")
-                )
+            reader = csv.DictReader(
+                handle, dialect=csv.Sniffer().sniff(sample, delimiters=",;\t")
             )
+            validate_header(reader.fieldnames)
+            return list(reader)
     if suffix == ".xlsx":
         from openpyxl import load_workbook
 
@@ -40,6 +57,7 @@ def read_rows(path):
         try:
             rows = iter(book.active.values)
             header = next(rows)
+            validate_header(header)
             return [
                 dict(zip(header, row))
                 for row in rows
@@ -51,16 +69,35 @@ def read_rows(path):
         rows = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(rows, list) or not all(isinstance(r, dict) for r in rows):
             raise ValueError("JSON должен содержать массив объектов")
+        for row in rows:
+            validate_header(list(row))
         return rows
     raise ValueError("Поддерживаются CSV, XLSX, JSON")
 
 
-def import_file(session, path, source_url, source_name, publisher="Росстат"):
+def import_file(
+    session,
+    path,
+    source_url,
+    source_name,
+    publisher="Росстат",
+    *,
+    original_path=None,
+    parser_version=PARSER_VERSION,
+):
     path = Path(path)
     payload = path.read_bytes()
     if len(payload) > 50 * 1024 * 1024:
         raise ValueError("Файл превышает 50 МБ")
     checksum = hashlib.sha256(payload).hexdigest()
+    original_payload = Path(original_path).read_bytes() if original_path else None
+    if original_payload is not None and len(original_payload) > 50 * 1024 * 1024:
+        raise ValueError("Исходный файл превышает 50 МБ")
+    batch_checksum = (
+        hashlib.sha256(original_payload).hexdigest()
+        if original_payload is not None
+        else checksum
+    )
     identifier = source_identifier(source_url)
     if session.bind.dialect.name == "postgresql":
         # Serialize revisions and source registration across all importer workers.
@@ -82,8 +119,8 @@ def import_file(session, path, source_url, source_name, publisher="Росста�
     previous = session.scalar(
         select(Batch).where(
             Batch.source_id == source.source_id,
-            Batch.checksum == checksum,
-            Batch.parser_version == PARSER_VERSION,
+            Batch.checksum == batch_checksum,
+            Batch.parser_version == parser_version,
         )
     )
     if previous:
@@ -95,12 +132,20 @@ def import_file(session, path, source_url, source_name, publisher="Росста�
         archived.write_bytes(payload)
     batch = Batch(
         source_id=source.source_id,
-        checksum=checksum,
+        checksum=batch_checksum,
         raw_path=str(archived),
-        parser_version=PARSER_VERSION,
+        parser_version=parser_version,
     )
     session.add(batch)
     session.flush()
+    if original_path:
+        original_path = Path(original_path)
+        original_hash = hashlib.sha256(original_payload).hexdigest()
+        original_archive = directory / (original_hash + original_path.suffix.lower())
+        if not original_archive.exists():
+            original_archive.write_bytes(original_payload)
+        batch.original_checksum = original_hash
+        batch.original_path = str(original_archive)
     regions = session.scalars(select(Region)).all()
     mapping = {}
     for region in regions:
@@ -142,8 +187,8 @@ def import_file(session, path, source_url, source_name, publisher="Росста�
             if len(matches) != 1:
                 raise ValueError("Неоднозначный или неизвестный регион: " + raw_region)
             region = matches[0]
-            start = date.fromisoformat(str(row["period_start"])[:10])
-            end = date.fromisoformat(str(row["period_end"])[:10])
+            start = period_date(row["period_start"])
+            end = period_date(row["period_end"])
             if (
                 end < start
                 or start < region.valid_from
@@ -154,12 +199,23 @@ def import_file(session, path, source_url, source_name, publisher="Росста�
                 raise ValueError(
                     "Начальные показатели допускают только полный календарный год"
                 )
-            published = datetime.fromisoformat(
-                str(row["published_at"]).replace("Z", "+00:00")
+            published = (
+                datetime.fromisoformat(str(row["published_at"]).replace("Z", "+00:00"))
+                if row["published_at"]
+                else None
             )
-            if published.tzinfo is None:
+            if published is not None and published.tzinfo is None:
                 raise ValueError("published_at должен содержать часовой пояс")
+            if "unit" in row and row["unit"] != indicator.unit:
+                raise ValueError(
+                    "Единица измерения не совпадает с методологией показателя"
+                )
+            status = row.get("data_status") or "official"
+            if status not in ("official", "provisional", "missing"):
+                raise ValueError("Неизвестный статус публикации")
             value = number(row["value"])
+            if status == "missing" and value is not None:
+                raise ValueError("Статус missing недопустим для числового значения")
             if value is not None and value < 0 and indicator.code != "natural_change":
                 raise ValueError("Отрицательное значение недопустимо")
             key = (indicator.indicator_id, region.region_id, start, end)
@@ -175,14 +231,19 @@ def import_file(session, path, source_url, source_name, publisher="Росста�
                     Value.is_current.is_(True),
                 )
             )
-            if old and old.value == value and old.source_id == source.source_id:
-                continue
-            if old:
+            if old and old.published_at is not None:
                 old_published = old.published_at
                 if old_published.tzinfo is None:
                     old_published = old_published.replace(tzinfo=timezone.utc)
-                if published < old_published:
+                if published is None or published < old_published:
                     raise ValueError("Публикация старее текущей версии")
+            if (
+                old
+                and old.value == value
+                and old.source_id == source.source_id
+                and old.data_status == ("missing" if value is None else status)
+            ):
+                continue
             revision = old.revision_number + 1 if old else 1
             if old:
                 old.is_current = False
@@ -196,8 +257,10 @@ def import_file(session, path, source_url, source_name, publisher="Росста�
                     value=value,
                     source_id=source.source_id,
                     batch_id=batch.batch_id,
-                    published_at=published.astimezone(timezone.utc),
-                    data_status="missing" if value is None else "official",
+                    published_at=published.astimezone(timezone.utc)
+                    if published
+                    else None,
+                    data_status="missing" if value is None else status,
                     revision_number=revision,
                 )
             )

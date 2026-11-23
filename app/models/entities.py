@@ -103,6 +103,8 @@ class Batch(Base):
     checksum: Mapped[str] = mapped_column(String(64))
     parser_version: Mapped[str] = mapped_column(Text, default="1.0.0")
     raw_path: Mapped[str] = mapped_column(Text)
+    original_checksum: Mapped[str | None] = mapped_column(String(64))
+    original_path: Mapped[str | None] = mapped_column(Text)
     rows_processed: Mapped[int] = mapped_column(Integer, default=0)
     errors: Mapped[int] = mapped_column(Integer, default=0)
     status: Mapped[str] = mapped_column(Text, default="running")
@@ -148,7 +150,7 @@ class Value(Base):
     batch_id: Mapped[UUID] = mapped_column(
         ForeignKey("regional.import_batches.batch_id")
     )
-    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     loaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     data_status: Mapped[str] = mapped_column(Text, default="official")
     is_current: Mapped[bool] = mapped_column(Boolean, default=True)

@@ -10,3 +10,13 @@ data/raw/*
 data/*.db
 data/archive/
 data/exports/
+child-media-monitor/
+child-practices-search/
+test-results/
+playwright-report/
+.coverage
+coverage.xml
+data/load-state.json
+data/ci-fixture.csv
+dependency-audit.json
+audit-requirements.txt

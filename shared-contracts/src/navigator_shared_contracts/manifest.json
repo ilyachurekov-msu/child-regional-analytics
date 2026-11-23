@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "platform_agreed": false,
+  "status": "candidate, regional IDs retained pending cross-module reconciliation",
+  "source_uuid_namespace": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+  "resources_sha256": {
+    "regions.csv": "0748907285863c4a0d9661414040a7bfec320d64e94d37c3298a5233fa4eebd7",
+    "topics.json": "2ad8d8e7fff60c99052499b595b1956145bdc929b43884185ba522d6079b656f",
+    "platform.schema.json": "98d4adf9eb2300dd470de0c139d85f359f36eddd9d5e85ad1005099379b019ec"
+  },
+  "other_modules": {
+    "media": "incompatible IDs and source namespace",
+    "practices": "not available for comparison"
+  }
+}

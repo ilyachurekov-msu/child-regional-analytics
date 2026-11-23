@@ -29,6 +29,32 @@ Offset = Annotated[int, Query(ge=0)]
 Year = Annotated[int | None, Query(ge=2019, le=2100)]
 
 
+@app.get("/api/v1/regional/indicator-metadata")
+def indicator_metadata(session: DB):
+    import json
+    from pathlib import Path
+
+    cards = json.loads(
+        Path("contracts/indicator-metadata.json").read_text(encoding="utf-8")
+    )
+    stats = {
+        code: (last, count)
+        for code, last, count in session.execute(
+            select(
+                Indicator.code, func.max(Value.loaded_at), func.count(Value.value_id)
+            )
+            .join(Value, Value.indicator_id == Indicator.indicator_id)
+            .where(Value.is_current.is_(True))
+            .group_by(Indicator.code)
+        )
+    }
+    for card in cards:
+        last, count = stats.get(card["code"], (None, 0))
+        card["last_successful_load"] = last
+        card["observations_loaded"] = count
+    return {"items": cards, "total": len(cards)}
+
+
 @app.exception_handler(HTTPException)
 async def http_error(request, exc):
     return JSONResponse(

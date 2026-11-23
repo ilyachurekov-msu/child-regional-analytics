@@ -1,0 +1,23 @@
+name: Controlled source check
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/source-verification]
+permissions:
+  contents: read
+jobs:
+  validate-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install .
+      - run: python -m scripts.update_data --source kemerovo-yearbook-2022 --validate-only
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-check-report
+          path: data/archive/latest-update-report.json
+          retention-days: 14

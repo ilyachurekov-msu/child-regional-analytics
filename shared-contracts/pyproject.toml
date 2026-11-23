@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "navigator-shared-contracts"
+version = "1.0.0"
+description = "Candidate platform contracts; cross-module reconciliation pending"
+requires-python = ">=3.11"
+
+[tool.setuptools.package-data]
+navigator_shared_contracts = ["*.csv", "*.json"]
