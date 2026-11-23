@@ -1,6 +1,8 @@
 name: Controlled source check
 on:
   workflow_dispatch:
+  push:
+    branches: [codex/source-verification]
 permissions:
   contents: read
 jobs:

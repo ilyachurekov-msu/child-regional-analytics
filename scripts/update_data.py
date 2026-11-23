@@ -62,6 +62,7 @@ def main():
             rows=len(rows),
             status="validated",
             normalized=str(normalized),
+            preview=rows,
         )
         if not args.validate_only:
             if not source["enabled"] and not args.approve_adapter:
