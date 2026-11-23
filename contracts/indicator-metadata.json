@@ -1,0 +1,107 @@
+[
+  {
+    "code": "births",
+    "name": "Число родившихся живыми",
+    "definition": "Число зарегистрированных живорождений за календарный год",
+    "unit": "человек",
+    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
+    "publisher": "Липецкстат",
+    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
+    "publication_date": "2024-02-27",
+    "observation_years": [
+      2022,
+      2023
+    ],
+    "territorial_coverage": [
+      "RU-48"
+    ],
+    "calculation": "Published absolute count; natural_change checked against births minus deaths",
+    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "last_successful_load": null,
+    "observations_loaded": 0
+  },
+  {
+    "code": "deaths",
+    "name": "Число умерших",
+    "definition": "Число зарегистрированных смертей за календарный год",
+    "unit": "человек",
+    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
+    "publisher": "Липецкстат",
+    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
+    "publication_date": "2024-02-27",
+    "observation_years": [
+      2022,
+      2023
+    ],
+    "territorial_coverage": [
+      "RU-48"
+    ],
+    "calculation": "Published absolute count; natural_change checked against births minus deaths",
+    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "last_successful_load": null,
+    "observations_loaded": 0
+  },
+  {
+    "code": "natural_change",
+    "name": "Естественный прирост (убыль)",
+    "definition": "Разность числа родившихся живыми и умерших; используется опубликованное значение",
+    "unit": "человек",
+    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
+    "publisher": "Липецкстат",
+    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
+    "publication_date": "2024-02-27",
+    "observation_years": [
+      2022,
+      2023
+    ],
+    "territorial_coverage": [
+      "RU-48"
+    ],
+    "calculation": "Published absolute count; natural_change checked against births minus deaths",
+    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "last_successful_load": null,
+    "observations_loaded": 0
+  },
+  {
+    "code": "marriages",
+    "name": "Число браков",
+    "definition": "Число зарегистрированных браков за календарный год",
+    "unit": "единиц",
+    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
+    "publisher": "Липецкстат",
+    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
+    "publication_date": "2024-02-27",
+    "observation_years": [
+      2022,
+      2023
+    ],
+    "territorial_coverage": [
+      "RU-48"
+    ],
+    "calculation": "Published absolute count; natural_change checked against births minus deaths",
+    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "last_successful_load": null,
+    "observations_loaded": 0
+  },
+  {
+    "code": "divorces",
+    "name": "Число разводов",
+    "definition": "Число зарегистрированных расторжений браков за календарный год",
+    "unit": "единиц",
+    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
+    "publisher": "Липецкстат",
+    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
+    "publication_date": "2024-02-27",
+    "observation_years": [
+      2022,
+      2023
+    ],
+    "territorial_coverage": [
+      "RU-48"
+    ],
+    "calculation": "Published absolute count; natural_change checked against births minus deaths",
+    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "last_successful_load": null,
+    "observations_loaded": 0
+  }
+]

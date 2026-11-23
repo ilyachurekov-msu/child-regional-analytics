@@ -52,7 +52,7 @@ class ObservationOut(BaseModel):
     source_id: UUID
     source_name: str
     source_url: str | None
-    published_at: datetime
+    published_at: datetime | None
     loaded_at: datetime
     data_status: str
     revision_number: int

@@ -113,11 +113,21 @@ CREATE TABLE regional.indicator_values (
     CONSTRAINT fk_indicator_values_batch_id_import_batches FOREIGN KEY(batch_id) REFERENCES regional.import_batches (batch_id)
 );
 
-CREATE INDEX ix_values_region_period ON regional.indicator_values (region_id, period_start);
-
 CREATE UNIQUE INDEX uq_values_current ON regional.indicator_values (indicator_id, region_id, period_start, period_end) WHERE is_current;
 
+CREATE INDEX ix_values_region_period ON regional.indicator_values (region_id, period_start);
+
 INSERT INTO alembic_version (version_num) VALUES ('0001') RETURNING alembic_version.version_num;
+
+-- Running upgrade 0001 -> 0002
+
+ALTER TABLE regional.import_batches ADD COLUMN original_checksum VARCHAR(64);
+
+ALTER TABLE regional.import_batches ADD COLUMN original_path TEXT;
+
+ALTER TABLE regional.indicator_values ALTER COLUMN published_at DROP NOT NULL;
+
+UPDATE alembic_version SET version_num='0002' WHERE alembic_version.version_num = '0001';
 
 COMMIT;
 

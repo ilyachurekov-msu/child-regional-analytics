@@ -1127,8 +1127,15 @@
             "title": "Source Url"
           },
           "published_at": {
-            "type": "string",
-            "format": "date-time",
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Published At"
           },
           "loaded_at": {

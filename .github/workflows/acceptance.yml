@@ -1,0 +1,116 @@
+name: MVP acceptance
+on:
+  pull_request:
+  push:
+    branches: [codex/mvp-acceptance]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: acceptance-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -e '.[dev]'
+      - run: python -m compileall -q app scripts migrations tests shared-contracts
+      - run: ruff check app scripts migrations tests shared-contracts
+      - run: pytest -q --junitxml=test-results/unit.xml
+      - run: python scripts/check_contracts.py
+      - run: python scripts/check_public_files.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-results
+          path: test-results/
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: regional
+          POSTGRES_PASSWORD: ci-disposable-only
+          POSTGRES_DB: regional_ci_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U regional -d regional_ci_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://regional:ci-disposable-only@localhost:5432/regional_ci_test
+      DATABASE_URL: postgresql+psycopg://regional:ci-disposable-only@localhost:5432/regional_ci_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e '.[dev]'
+      - run: pytest -m postgres tests/integration -q --junitxml=test-results/postgres.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: postgres-results
+          path: test-results/
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e '.[dev]'
+      - run: playwright install --with-deps chromium
+      - name: Configure isolated containers
+        run: |
+          cp .env.example .env
+          docker compose config --quiet
+      - run: docker compose up --build -d --wait --wait-timeout 180
+      - run: python -m scripts.smoke
+      - name: Seed isolated UI fixtures (never official data)
+        run: |
+          python -m scripts.make_ci_fixture
+          docker compose exec -T api python -m scripts.import_data data/ci-fixture.csv --source-url https://example.gov.ru/ci-synthetic --source-name "SYNTHETIC CI ONLY"
+      - run: pytest -m browser tests/browser -q --junitxml=test-results/browser.xml
+      - name: Verify persistence after database restart
+        run: |
+          docker compose restart db
+          python -m scripts.smoke --expected-observations 20
+      - name: Collect container evidence
+        if: always()
+        run: |
+          mkdir -p test-results
+          docker compose ps -a > test-results/containers.txt
+          docker compose logs --no-color > test-results/containers.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-browser-evidence
+          path: test-results/
+      - run: docker compose down -v
+        if: always()
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e '.[dev]'
+      - run: pip-audit --strict --format json --output dependency-audit.json
+      - name: Scan secrets in git history
+        if: always()
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.24.3 detect --source=/repo --redact --exit-code=1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-audit
+          path: dependency-audit.json

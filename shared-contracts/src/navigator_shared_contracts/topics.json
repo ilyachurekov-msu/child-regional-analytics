@@ -1,0 +1,42 @@
+[
+  {
+    "topic_id": "demography",
+    "name": "Демография",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "family",
+    "name": "Семья",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "education",
+    "name": "Образование",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "healthcare",
+    "name": "Здравоохранение",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "social_support",
+    "name": "Социальная поддержка",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "orphanhood",
+    "name": "Сиротство и семейное устройство",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "safety",
+    "name": "Безопасность",
+    "parent_topic_id": null
+  },
+  {
+    "topic_id": "infrastructure",
+    "name": "Инфраструктура",
+    "parent_topic_id": null
+  }
+]

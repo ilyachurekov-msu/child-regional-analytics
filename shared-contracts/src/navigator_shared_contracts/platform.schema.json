@@ -1,0 +1,201 @@
+{
+  "$defs": {
+    "RegionOut": {
+      "properties": {
+        "region_id": {
+          "title": "Region Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "federal_district": {
+          "title": "Federal District",
+          "type": "string"
+        },
+        "okato_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Okato Code"
+        },
+        "oktmo_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Oktmo Code"
+        },
+        "valid_from": {
+          "format": "date",
+          "title": "Valid From",
+          "type": "string"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valid To"
+        }
+      },
+      "required": [
+        "region_id",
+        "name",
+        "federal_district",
+        "okato_code",
+        "oktmo_code",
+        "valid_from",
+        "valid_to"
+      ],
+      "title": "RegionOut",
+      "type": "object"
+    },
+    "SourceContract": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "format": "uuid",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_type": {
+          "title": "Source Type",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        },
+        "publisher": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Publisher"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "normalized_identifier": {
+          "title": "Normalized Identifier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_type",
+        "name",
+        "url",
+        "publisher",
+        "created_at",
+        "normalized_identifier"
+      ],
+      "title": "SourceContract",
+      "type": "object"
+    },
+    "TopicContract": {
+      "additionalProperties": false,
+      "properties": {
+        "topic_id": {
+          "title": "Topic Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "parent_topic_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parent Topic Id"
+        }
+      },
+      "required": [
+        "topic_id",
+        "name",
+        "parent_topic_id"
+      ],
+      "title": "TopicContract",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "default": "1.0.0",
+      "title": "Contract Version",
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "regions": {
+      "items": {
+        "$ref": "#/$defs/RegionOut"
+      },
+      "title": "Regions",
+      "type": "array"
+    },
+    "topics": {
+      "items": {
+        "$ref": "#/$defs/TopicContract"
+      },
+      "title": "Topics",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceContract"
+      },
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "regions",
+    "topics",
+    "sources"
+  ],
+  "title": "PlatformContract",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:navigator-childhood:platform:1.0.0",
+  "x-contract-version": "1.0.0"
+}

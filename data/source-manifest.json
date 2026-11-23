@@ -1,0 +1,23 @@
+{
+  "manifest_version": "1.0.0",
+  "automatic_schedule_enabled": false,
+  "sources": [
+    {
+      "id": "lipetsk-edn-2023",
+      "publisher": "Липецкстат",
+      "name": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
+      "url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
+      "adapter": "lipetsk-yearly-pdf/1.0.0",
+      "region_id": "RU-48",
+      "years": [2022, 2023],
+      "published_at": "2024-02-27T00:00:00Z",
+      "publication_precision": "date, UTC midnight encodes publication date, not observed release time",
+      "format": "pdf",
+      "indicators": ["births", "deaths", "natural_change", "marriages", "divorces"],
+      "conditions": "При использовании информации ссылка на Липецкстат обязательна. Исходный PDF не включается в Git до подтверждения условий распространения.",
+      "adapter_validation": "synthetic tests only; must verify against downloaded original before production import",
+      "last_successful_load": null,
+      "enabled": false
+    }
+  ]
+}
