@@ -1,0 +1,21 @@
+{
+  "bundle_version": "1.0.0",
+  "source_url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+  "source_name": "Кемеровостат: Кузбасс, раздел 4, таблицы 4.12 и 4.20",
+  "publisher": "Кемеровостат",
+  "source_sha256": "b3d8aba8e051d2ed98878258c950356f7b16d8680b73e1ff184452cac47078b3",
+  "normalized_sha256": "a69a80d7bf4d0bfb41ba34024697c0937ea9acf3b206dce97b59a28108671ac6",
+  "retrieved_at": "2026-11-23T22:05:59.898397+00:00",
+  "published_at": null,
+  "region_id": "RU-42",
+  "years": [
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "observations": 20,
+  "adapter": "kemerovo-yearbook-html/1.0.0",
+  "methodology": "Annual registry statistics; only live births; absolute counts of whole population. Rates and urban/rural subgroups excluded. Census changes affect denominators; no rates calculated.",
+  "redistribution": "Only extracted aggregate numerical facts with attribution are included; original HTML is excluded."
+}

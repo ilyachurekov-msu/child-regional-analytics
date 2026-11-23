@@ -195,3 +195,13 @@ def test_parallel_import_and_advisory_lock(pg_session, pg_engine, tmp_path):
             second.scalar(text("SELECT pg_try_advisory_xact_lock(1701202601)")) is True
         )
         second.rollback()
+
+
+def test_inspected_official_subset_on_postgres(pg_session):
+    from scripts.load_official_bundle import load_bundle
+
+    first = load_bundle(pg_session)
+    assert first.errors == 0
+    assert load_bundle(pg_session).batch_id == first.batch_id
+    assert pg_session.scalar(select(func.count()).select_from(Value)) == 20
+    pg_session.commit()

@@ -9,15 +9,52 @@
       "url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
       "adapter": "lipetsk-yearly-pdf/1.0.0",
       "region_id": "RU-48",
-      "years": [2022, 2023],
+      "years": [
+        2022,
+        2023
+      ],
       "published_at": "2024-02-27T00:00:00Z",
       "publication_precision": "date, UTC midnight encodes publication date, not observed release time",
       "format": "pdf",
-      "indicators": ["births", "deaths", "natural_change", "marriages", "divorces"],
+      "indicators": [
+        "births",
+        "deaths",
+        "natural_change",
+        "marriages",
+        "divorces"
+      ],
       "conditions": "При использовании информации ссылка на Липецкстат обязательна. Исходный PDF не включается в Git до подтверждения условий распространения.",
       "adapter_validation": "synthetic tests only; must verify against downloaded original before production import",
       "last_successful_load": null,
       "enabled": false
+    },
+    {
+      "id": "kemerovo-yearbook-2022",
+      "publisher": "Кемеровостат",
+      "name": "Кузбасс. Статистический ежегодник: раздел 4 Население, таблицы 4.12 и 4.20",
+      "url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+      "adapter": "kemerovo-yearbook-html/1.0.0",
+      "region_id": "RU-42",
+      "years": [
+        2019,
+        2020,
+        2021,
+        2022
+      ],
+      "published_at": null,
+      "publication_precision": "unknown; embedded Word save date is not publication date",
+      "format": "html",
+      "indicators": [
+        "births",
+        "deaths",
+        "natural_change",
+        "marriages",
+        "divorces"
+      ],
+      "conditions": "Official public aggregate statistics; cite Kemerovostat. Original HTML excluded from Git pending redistribution terms.",
+      "adapter_validation": "original obtained and tables/units/methodology inspected 2026-11-24",
+      "last_successful_load": null,
+      "enabled": true
     }
   ]
 }

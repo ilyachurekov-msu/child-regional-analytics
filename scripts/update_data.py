@@ -8,7 +8,7 @@ from pathlib import Path
 import httpx
 from sqlalchemy.orm import Session
 from app.db import engine
-from app.etl.adapters import adapt_pdf
+from app.etl.adapters import adapt_pdf, kemerovo_html
 from app.etl.importer import import_file
 
 
@@ -46,13 +46,20 @@ def main():
                 response = client.get(source["url"])
                 response.raise_for_status()
                 original = response.content
-        if not original.startswith(b"%PDF-") or len(original) > 50 * 1024 * 1024:
-            raise ValueError("Expected PDF smaller than 50MB")
+        is_html = source["format"] == "html"
+        if (not is_html and not original.startswith(b"%PDF-")) or len(
+            original
+        ) > 50 * 1024 * 1024:
+            raise ValueError("Unexpected original format or size exceeds 50MB")
         checksum = hashlib.sha256(original).hexdigest()
-        path = folder / (checksum + ".pdf")
+        path = folder / (checksum + (".html" if is_html else ".pdf"))
         if not path.exists():
             path.write_bytes(original)
-        rows = adapt_pdf(path, source)
+        rows = (
+            kemerovo_html(original, source)
+            if is_html and source["adapter"] == "kemerovo-yearbook-html/1.0.0"
+            else adapt_pdf(path, source)
+        )
         normalized = folder / (checksum + ".normalized.json")
         normalized.write_text(
             json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8"

@@ -18,7 +18,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "alembic upgrade head && python -m scripts.seed"
+    command: sh -c "alembic upgrade head && python -m scripts.seed && python -m scripts.load_official_bundle"
   api:
     build: .
     env_file: .env

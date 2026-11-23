@@ -39,6 +39,21 @@ def test_seven_pages_and_screenshots(page):
             expect(
                 page.get_by_role("combobox", name="Регион", exact=True)
             ).to_be_visible(timeout=30000)
+        if name in (
+            "Паспорт региона",
+            "Динамика показателей",
+            "Экспорт аналитической справки",
+        ):
+            region = page.get_by_role("combobox", name="Регион", exact=True)
+            region.click()
+            region.fill("Кемеровская")
+            page.get_by_role(
+                "option", name="Кемеровская область — Кузбасс", exact=True
+            ).click()
+            if name == "Динамика показателей":
+                expect(page.get_by_test_id("stPlotlyChart")).to_have_count(
+                    1, timeout=30000
+                )
         expect(page.get_by_test_id("stException")).to_have_count(0)
         expect(page.get_by_role("radio", name=name, exact=True)).to_be_checked()
         page.screenshot(path=str(output / f"{index + 1}.png"), full_page=True)

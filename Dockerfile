@@ -7,5 +7,6 @@ COPY contracts ./contracts
 COPY migrations ./migrations
 COPY scripts ./scripts
 COPY alembic.ini ./
+COPY data/official ./data/official
 ENV PYTHONUNBUFFERED=1
 CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

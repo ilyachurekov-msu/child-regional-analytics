@@ -74,3 +74,89 @@ def adapt_pdf(path, specification):
         for page in PdfReader(path).pages
     )
     return lipetsk_table(text, specification)
+
+
+def kemerovo_html(payload, specification):
+    from app.etl.html_tables import publication_tables
+
+    if specification["region_id"] != "RU-42" or specification["years"] != [
+        2019,
+        2020,
+        2021,
+        2022,
+    ]:
+        raise ValueError(
+            "Unsupported region/year contract for Kemerovostat publication"
+        )
+    tables = publication_tables(payload)
+    demo = [
+        t
+        for t in tables
+        if re.search(
+            r"4\.12\.\s*РОЖДАЕМОСТЬ,\s*СМЕРТНОСТЬ И ЕСТЕСТВЕННЫЙ ПРИРОСТ НАСЕЛЕНИЯ\s*$",
+            t["context"],
+        )
+    ]
+    marriage = [
+        t for t in tables if re.search(r"4\.20\.\s*БРАКИ И\s*РАЗВОДЫ\s*$", t["context"])
+    ]
+    if len(demo) != 1 or len(marriage) != 1:
+        raise ValueError("Changed table headings 4.12/4.20")
+    demo = demo[0]["rows"]
+    marriage = marriage[0]["rows"]
+    if "Всего, человек" not in demo[0] or "Всё население" not in demo[3]:
+        raise ValueError("Expected absolute counts for entire population")
+    if [c.replace(" ", "") for c in marriage[0][1:]] != [
+        "2018",
+        "2019",
+        "2020",
+        "2021",
+        "2022",
+    ]:
+        raise ValueError("Changed marriage years")
+    if (
+        marriage[2][0] != "Браков"
+        or marriage[3][0] != "Разводов"
+        or not marriage[4][0].startswith("На 1000")
+    ):
+        raise ValueError("Changed marriage absolute/rate boundary")
+    result = []
+    years = []
+    # Exactly the first all-population block, never urban/rural or Russian rates.
+    for item in demo[4:9]:
+        year = int(item[0].replace(" ", ""))
+        years.append(year)
+        if len(item) != 11:
+            raise ValueError("Changed demography column count")
+        if year not in specification["years"]:
+            continue
+        values = {
+            code: int(item[index].replace(" ", ""))
+            for index, code in enumerate(
+                ("births", "deaths", "natural_change"), start=1
+            )
+        }
+        if values["births"] - values["deaths"] != values["natural_change"]:
+            raise ValueError("Natural change reconciliation failed")
+        column = year - 2018 + 1
+        values.update(
+            marriages=int(marriage[2][column]), divorces=int(marriage[3][column])
+        )
+        for code, value in values.items():
+            if code != "natural_change" and value < 0:
+                raise ValueError("Negative event count")
+            result.append(
+                dict(
+                    indicator_code=code,
+                    region="RU-42",
+                    period_start=f"{year}-01-01",
+                    period_end=f"{year}-12-31",
+                    value=str(value),
+                    published_at=None,
+                    unit="единиц" if code in ("marriages", "divorces") else "человек",
+                    data_status="official",
+                )
+            )
+    if years != [2018, 2019, 2020, 2021, 2022] or len(result) != 20:
+        raise ValueError("Changed all-population year coverage")
+    return result

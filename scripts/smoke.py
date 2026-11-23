@@ -1,5 +1,7 @@
 import argparse
 import time
+import json
+from pathlib import Path
 import httpx
 
 
@@ -23,6 +25,22 @@ def main():
                     response = client.get("http://localhost:8000/api/v1/" + path)
                     response.raise_for_status()
                 client.get("http://localhost:8501/_stcore/health").raise_for_status()
+                official = client.get(
+                    "http://localhost:8000/api/v1/regional/values",
+                    params={"region_id": "RU-42", "limit": 1000},
+                ).json()
+                receipt = {
+                    "official_observations": official["total"],
+                    "regions": ["RU-42"] if official["total"] else [],
+                    "years": sorted({r["period_start"][:4] for r in official["items"]}),
+                    "latest_loaded_at": max(
+                        (r["loaded_at"] for r in official["items"]), default=None
+                    ),
+                }
+                Path("test-results").mkdir(exist_ok=True)
+                Path("test-results/official-load-receipt.json").write_text(
+                    json.dumps(receipt, indent=2), encoding="utf-8"
+                )
                 if args.expected_observations is not None:
                     count = client.get(
                         "http://localhost:8000/api/v1/regional/data-quality"

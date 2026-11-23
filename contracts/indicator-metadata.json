@@ -4,104 +4,124 @@
     "name": "Число родившихся живыми",
     "definition": "Число зарегистрированных живорождений за календарный год",
     "unit": "человек",
-    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
-    "publisher": "Липецкстат",
-    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
-    "publication_date": "2024-02-27",
+    "source": "Кузбасс. Статистический ежегодник: раздел 4 Население, таблицы 4.12 и 4.20",
+    "publisher": "Кемеровостат",
+    "source_url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+    "publication_date": null,
     "observation_years": [
-      2022,
-      2023
+      2019,
+      2020,
+      2021,
+      2022
     ],
     "territorial_coverage": [
-      "RU-48"
+      "RU-42"
     ],
     "calculation": "Published absolute count; natural_change checked against births minus deaths",
-    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "comparability_limits": "Annual ZAGS development; whole population; absolute counts. Census-related rate denominators are excluded. Source table 4.12/4.20. No Russia/FD absolute totals inferred.",
     "last_successful_load": null,
-    "observations_loaded": 0
+    "observations_loaded": null,
+    "observations_in_official_bundle": 20,
+    "load_status": "database-specific; see API quality endpoint"
   },
   {
     "code": "deaths",
     "name": "Число умерших",
     "definition": "Число зарегистрированных смертей за календарный год",
     "unit": "человек",
-    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
-    "publisher": "Липецкстат",
-    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
-    "publication_date": "2024-02-27",
+    "source": "Кузбасс. Статистический ежегодник: раздел 4 Население, таблицы 4.12 и 4.20",
+    "publisher": "Кемеровостат",
+    "source_url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+    "publication_date": null,
     "observation_years": [
-      2022,
-      2023
+      2019,
+      2020,
+      2021,
+      2022
     ],
     "territorial_coverage": [
-      "RU-48"
+      "RU-42"
     ],
     "calculation": "Published absolute count; natural_change checked against births minus deaths",
-    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "comparability_limits": "Annual ZAGS development; whole population; absolute counts. Census-related rate denominators are excluded. Source table 4.12/4.20. No Russia/FD absolute totals inferred.",
     "last_successful_load": null,
-    "observations_loaded": 0
+    "observations_loaded": null,
+    "observations_in_official_bundle": 20,
+    "load_status": "database-specific; see API quality endpoint"
   },
   {
     "code": "natural_change",
     "name": "Естественный прирост (убыль)",
     "definition": "Разность числа родившихся живыми и умерших; используется опубликованное значение",
     "unit": "человек",
-    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
-    "publisher": "Липецкстат",
-    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
-    "publication_date": "2024-02-27",
+    "source": "Кузбасс. Статистический ежегодник: раздел 4 Население, таблицы 4.12 и 4.20",
+    "publisher": "Кемеровостат",
+    "source_url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+    "publication_date": null,
     "observation_years": [
-      2022,
-      2023
+      2019,
+      2020,
+      2021,
+      2022
     ],
     "territorial_coverage": [
-      "RU-48"
+      "RU-42"
     ],
     "calculation": "Published absolute count; natural_change checked against births minus deaths",
-    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "comparability_limits": "Annual ZAGS development; whole population; absolute counts. Census-related rate denominators are excluded. Source table 4.12/4.20. No Russia/FD absolute totals inferred.",
     "last_successful_load": null,
-    "observations_loaded": 0
+    "observations_loaded": null,
+    "observations_in_official_bundle": 20,
+    "load_status": "database-specific; see API quality endpoint"
   },
   {
     "code": "marriages",
     "name": "Число браков",
     "definition": "Число зарегистрированных браков за календарный год",
     "unit": "единиц",
-    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
-    "publisher": "Липецкстат",
-    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
-    "publication_date": "2024-02-27",
+    "source": "Кузбасс. Статистический ежегодник: раздел 4 Население, таблицы 4.12 и 4.20",
+    "publisher": "Кемеровостат",
+    "source_url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+    "publication_date": null,
     "observation_years": [
-      2022,
-      2023
+      2019,
+      2020,
+      2021,
+      2022
     ],
     "territorial_coverage": [
-      "RU-48"
+      "RU-42"
     ],
     "calculation": "Published absolute count; natural_change checked against births minus deaths",
-    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "comparability_limits": "Annual ZAGS development; whole population; absolute counts. Census-related rate denominators are excluded. Source table 4.12/4.20. No Russia/FD absolute totals inferred.",
     "last_successful_load": null,
-    "observations_loaded": 0
+    "observations_loaded": null,
+    "observations_in_official_bundle": 20,
+    "load_status": "database-specific; see API quality endpoint"
   },
   {
     "code": "divorces",
     "name": "Число разводов",
     "definition": "Число зарегистрированных расторжений браков за календарный год",
     "unit": "единиц",
-    "source": "О демографической ситуации Липецкой области в январе-декабре 2023 года",
-    "publisher": "Липецкстат",
-    "source_url": "https://48.rosstat.gov.ru/storage/mediabank/О демографической ситуации Липецкой области в январе-декабре 2023 г.pdf",
-    "publication_date": "2024-02-27",
+    "source": "Кузбасс. Статистический ежегодник: раздел 4 Население, таблицы 4.12 и 4.20",
+    "publisher": "Кемеровостат",
+    "source_url": "https://service.kemerovostat.gks.ru/bgd/EJEGOD/issWWW.exe/Stg/2022/4.%20%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.htm",
+    "publication_date": null,
     "observation_years": [
-      2022,
-      2023
+      2019,
+      2020,
+      2021,
+      2022
     ],
     "territorial_coverage": [
-      "RU-48"
+      "RU-42"
     ],
     "calculation": "Published absolute count; natural_change checked against births minus deaths",
-    "comparability_limits": "Годовая статистика ЗАГС; источник: Росстат, Естественное движение населения. https://rosstat.gov.ru/compendium/document/13269 . Учитывать территориальный охват и примечания конкретной таблицы. Абсолютные величины не характеризуют индивидуальный риск; не нормировать по численности без сопоставимого знаменателя. Источник может пересматривать публикации.",
+    "comparability_limits": "Annual ZAGS development; whole population; absolute counts. Census-related rate denominators are excluded. Source table 4.12/4.20. No Russia/FD absolute totals inferred.",
     "last_successful_load": null,
-    "observations_loaded": 0
+    "observations_loaded": null,
+    "observations_in_official_bundle": 20,
+    "load_status": "database-specific; see API quality endpoint"
   }
 ]

@@ -1,0 +1,202 @@
+[
+  {
+    "indicator_code": "births",
+    "region": "RU-42",
+    "period_start": "2019-01-01",
+    "period_end": "2019-12-31",
+    "value": "23989",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "deaths",
+    "region": "RU-42",
+    "period_start": "2019-01-01",
+    "period_end": "2019-12-31",
+    "value": "37882",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "natural_change",
+    "region": "RU-42",
+    "period_start": "2019-01-01",
+    "period_end": "2019-12-31",
+    "value": "-13893",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "marriages",
+    "region": "RU-42",
+    "period_start": "2019-01-01",
+    "period_end": "2019-12-31",
+    "value": "16139",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "divorces",
+    "region": "RU-42",
+    "period_start": "2019-01-01",
+    "period_end": "2019-12-31",
+    "value": "11451",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "births",
+    "region": "RU-42",
+    "period_start": "2020-01-01",
+    "period_end": "2020-12-31",
+    "value": "22601",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "deaths",
+    "region": "RU-42",
+    "period_start": "2020-01-01",
+    "period_end": "2020-12-31",
+    "value": "42946",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "natural_change",
+    "region": "RU-42",
+    "period_start": "2020-01-01",
+    "period_end": "2020-12-31",
+    "value": "-20345",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "marriages",
+    "region": "RU-42",
+    "period_start": "2020-01-01",
+    "period_end": "2020-12-31",
+    "value": "13517",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "divorces",
+    "region": "RU-42",
+    "period_start": "2020-01-01",
+    "period_end": "2020-12-31",
+    "value": "10642",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "births",
+    "region": "RU-42",
+    "period_start": "2021-01-01",
+    "period_end": "2021-12-31",
+    "value": "21602",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "deaths",
+    "region": "RU-42",
+    "period_start": "2021-01-01",
+    "period_end": "2021-12-31",
+    "value": "47589",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "natural_change",
+    "region": "RU-42",
+    "period_start": "2021-01-01",
+    "period_end": "2021-12-31",
+    "value": "-25987",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "marriages",
+    "region": "RU-42",
+    "period_start": "2021-01-01",
+    "period_end": "2021-12-31",
+    "value": "15112",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "divorces",
+    "region": "RU-42",
+    "period_start": "2021-01-01",
+    "period_end": "2021-12-31",
+    "value": "11963",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "births",
+    "region": "RU-42",
+    "period_start": "2022-01-01",
+    "period_end": "2022-12-31",
+    "value": "19765",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "deaths",
+    "region": "RU-42",
+    "period_start": "2022-01-01",
+    "period_end": "2022-12-31",
+    "value": "38365",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "natural_change",
+    "region": "RU-42",
+    "period_start": "2022-01-01",
+    "period_end": "2022-12-31",
+    "value": "-18600",
+    "published_at": null,
+    "unit": "человек",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "marriages",
+    "region": "RU-42",
+    "period_start": "2022-01-01",
+    "period_end": "2022-12-31",
+    "value": "18880",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  },
+  {
+    "indicator_code": "divorces",
+    "region": "RU-42",
+    "period_start": "2022-01-01",
+    "period_end": "2022-12-31",
+    "value": "11713",
+    "published_at": null,
+    "unit": "единиц",
+    "data_status": "official"
+  }
+]
