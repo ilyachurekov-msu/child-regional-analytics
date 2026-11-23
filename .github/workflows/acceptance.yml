@@ -104,7 +104,9 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -e '.[dev]'
-      - run: pip-audit --strict --format json --output dependency-audit.json
+      - name: Export installed third-party dependencies
+        run: python -m pip freeze --exclude regional-analytics > audit-requirements.txt
+      - run: pip-audit --strict --no-deps --disable-pip -r audit-requirements.txt --format json --output dependency-audit.json
       - name: Scan secrets in git history
         if: always()
         run: |

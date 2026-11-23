@@ -19,3 +19,4 @@ coverage.xml
 data/load-state.json
 data/ci-fixture.csv
 dependency-audit.json
+audit-requirements.txt
