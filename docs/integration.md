@@ -22,6 +22,7 @@
 
 - `/regions`, `/regions/{region_id}` — справочник и карточка.
 - `/regional/indicators` — определения, единицы, направления, методология.
+- `/regional/indicator-metadata` — карточки происхождения с фактическим числом наблюдений и последней успешной загрузкой текущей БД.
 - `/regional/values` — фильтры region_id, indicator_code, year, history; limit 1–1000, offset.
 - `/regional/profiles/{region_id}` — наблюдения региона, РФ и опубликованного ФО.
 - `/regional/comparison` — повторяющийся параметр region_ids (2–5 уникальных), indicator_code, необязательный year.

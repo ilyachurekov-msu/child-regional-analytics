@@ -72,3 +72,22 @@ def test_html_parser_and_fail_closed():
         kemerovo_html(
             html.replace("Всего, человек", "На 1000 жителей").encode("cp1251"), spec
         )
+
+
+def test_metadata_tracks_database_load(session):
+    from fastapi.testclient import TestClient
+    from app.api.main import app
+    from app.db import get_session
+
+    load_bundle(session)
+    app.dependency_overrides[get_session] = lambda: session
+    try:
+        with TestClient(app) as client:
+            cards = client.get("/api/v1/regional/indicator-metadata").json()["items"]
+            assert len(cards) == 5
+            assert all(
+                card["observations_loaded"] == 4 and card["last_successful_load"]
+                for card in cards
+            )
+    finally:
+        app.dependency_overrides.clear()
