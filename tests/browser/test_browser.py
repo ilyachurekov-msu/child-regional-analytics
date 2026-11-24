@@ -57,7 +57,7 @@ def test_seven_pages_and_screenshots(page):
                 )
         expect(page.get_by_test_id("stException")).to_have_count(0)
         if name == 'Карта России':
-            page.wait_for_function("document.querySelectorAll('.choroplethlayer path').length >= 83", timeout=30000)
+            expect(page.locator('.maplibregl-canvas')).to_be_visible(timeout=30000)
             expect(page.get_by_text('Серый цвет: нет данных', exact=False)).to_be_visible()
         expect(page.get_by_role("radio", name=name, exact=True)).to_be_checked()
         page.screenshot(path=str(output / f"{index + 1}.png"), full_page=True)

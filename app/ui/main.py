@@ -251,7 +251,7 @@ elif page == "Карта России":
     df = frame(all_values(indicator_code=code, year=year))
     geography = Path("data/regions.geojson.gz")
     if geography.exists():
-        from app.services.geography import plotly_geography as load_geography
+        from app.services.geography import geography as load_geography
         geo, provenance = load_geography()
         st.caption('Границы: geoBoundaries / OpenStreetMap, 2017, ODbL 1.0. Покрытие: 83 региона; отсутствуют ' + ', '.join(provenance['missing_regions']))
         # Offline choropleth; no tiles or third-party network required.
@@ -263,7 +263,7 @@ elif page == "Карта России":
         )
         merged = base.merge(values, on="region_id", how="left")
         fig = go.Figure(
-            go.Choropleth(
+            go.Choroplethmap(
                 geojson=geo,
                 featureidkey="properties.region_id",
                 locations=merged.region_id,
@@ -277,7 +277,7 @@ elif page == "Карта России":
         )
         valid = merged[merged.value.notna()]
         fig.add_trace(
-            go.Choropleth(
+            go.Choroplethmap(
                 geojson=geo,
                 featureidkey="properties.region_id",
                 locations=valid.region_id,
@@ -289,10 +289,8 @@ elif page == "Карта России":
                 hovertemplate="%{text}: %{z}<extra></extra>",
             )
         )
-        fig.update_geos(fitbounds=False, visible=False, projection_type='mercator',
-                        projection_rotation_lon=-100, center_lon=100, center_lat=65,
-                        projection_scale=1.8)
-        fig.update_layout(clickmode='event+select', height=560, margin=dict(l=0, r=0, t=10, b=10))
+        fig.update_layout(map=dict(style='white-bg', center=dict(lon=100, lat=65), zoom=1.3),
+                          clickmode='event+select', height=560, margin=dict(l=0, r=0, t=10, b=10))
         def select_on_map():
             points = st.session_state['regional_map']['selection']['points']
             if points:
@@ -303,6 +301,11 @@ elif page == "Карта России":
 
         st.plotly_chart(fig, use_container_width=True, key='regional_map', on_select=select_on_map)
         st.caption(f"{year} · {indicator['unit']} · Серый цвет: нет данных")
+        profile_target = st.selectbox('Профиль региона на карте', list(region_names), format_func=region_names.get)
+        def open_profile():
+            st.session_state['profile_region'] = profile_target
+            st.session_state['page'] = 'Паспорт региона'
+        st.button('Открыть профиль региона', on_click=open_profile)
     else:
         st.info(
             "Географические границы ещё не подключены. Для автономной карты требуется проверенный data/regions.geojson с properties.region_id. Доступные значения показаны ниже."
