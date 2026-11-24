@@ -290,6 +290,7 @@ elif page == "Карта России":
             )
         )
         fig.update_geos(fitbounds="locations", visible=False)
+        fig.update_layout(clickmode='event+select')
         def select_on_map():
             points = st.session_state['regional_map']['selection']['points']
             if points:
