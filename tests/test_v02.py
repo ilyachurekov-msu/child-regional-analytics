@@ -47,6 +47,18 @@ def test_official_extension_has_no_imputation():
         validate_series(altered, {"years": [2018]})
 
 
+def test_extended_official_bundle_imports_all_years(session):
+    from app.etl.importer import import_file
+    from sqlalchemy import select, func
+    from app.models.entities import Value
+    meta = json.loads(Path('data/official/provenance-v02.json').read_text(encoding='utf-8'))
+    path = Path('data/official', meta['normalized_file'])
+    first = import_file(session, path, meta['source_url'], meta['source_name'], meta['publisher'])
+    assert first.errors == 0
+    assert session.scalar(select(func.count()).select_from(Value)) == 25
+    assert import_file(session, path, meta['source_url'], meta['source_name'], meta['publisher']).batch_id == first.batch_id
+
+
 def test_canonical_source_identity_matches_media_procedure():
     from uuid import UUID, uuid5
 

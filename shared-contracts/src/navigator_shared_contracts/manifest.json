@@ -5,7 +5,7 @@
   "source_uuid_namespace": "72c4db98-6752-5fe0-a56d-af600628f13b",
   "legacy_source_uuid_namespace": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
   "resources_sha256": {
-    "regions.csv": "0748907285863c4a0d9661414040a7bfec320d64e94d37c3298a5233fa4eebd7",
+    "regions.csv": "c1593e006387c4eb84c77524c8f6123502f8612e4628bb486d1a2fc8d87cdbb5",
     "topics.json": "2ad8d8e7fff60c99052499b595b1956145bdc929b43884185ba522d6079b656f",
     "topics.csv": "1e30faa1d7bf59eba4ef293c7819f0a216c9c6a6d1a0654daf519ec45148eff3",
     "platform.schema.json": "98d4adf9eb2300dd470de0c139d85f359f36eddd9d5e85ad1005099379b019ec",

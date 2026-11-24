@@ -104,7 +104,7 @@ def test_migrated_postgres_schema_and_indexes(pg_session):
     assert pg_session.scalar(
         text("SELECT extversion FROM pg_extension WHERE extname='vector'")
     )
-    assert pg_session.scalar(text("SELECT version_num FROM alembic_version")) == "0003"
+    assert pg_session.scalar(text("SELECT version_num FROM alembic_version")) == "0004"
     schemas = set(
         pg_session.scalars(text("SELECT schema_name FROM information_schema.schemata"))
     )
