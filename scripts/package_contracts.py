@@ -1,5 +1,6 @@
 """Explicit contract release preparation, never an implicit CI mutation."""
 
+from app.contract_version import CONTRACT_VERSION
 import hashlib
 import json
 from pathlib import Path
@@ -15,7 +16,7 @@ def main():
         (root / name).write_bytes(payload)
         hashes[name] = hashlib.sha256(payload).hexdigest()
     manifest = {
-        "version": "1.0.0",
+        "version": CONTRACT_VERSION,
         "platform_agreed": False,
         "status": "candidate, regional IDs retained pending cross-module reconciliation",
         "source_uuid_namespace": '72c4db98-6752-5fe0-a56d-af600628f13b',

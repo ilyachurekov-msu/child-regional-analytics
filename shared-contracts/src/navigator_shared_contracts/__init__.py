@@ -4,7 +4,7 @@ from importlib.resources import files
 from uuid import NAMESPACE_URL, uuid5
 from .identity import canonical_source_uuid
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 SOURCE_UUID_NAMESPACE = NAMESPACE_URL
 PLATFORM_AGREED = False
 

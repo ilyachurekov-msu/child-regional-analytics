@@ -11,9 +11,17 @@ def geography():
         Path("data/geography-provenance.json").read_text(encoding="utf-8")
     )
     payload = gzip.decompress(Path("data/regions.geojson.gz").read_bytes())
-    if hashlib.sha256(payload).hexdigest() != metadata["derived_sha256"]:
+    if hashlib.sha256(payload).hexdigest() != metadata["base_derived_sha256"]:
         raise ValueError("Geography checksum mismatch")
-    return json.loads(payload), metadata
+    geo = json.loads(payload)
+    supplement = gzip.decompress(Path("data/profile89-supplement.geojson.gz").read_bytes())
+    if hashlib.sha256(supplement).hexdigest() != metadata["supplement_derived_sha256"]:
+        raise ValueError("Geography supplement checksum mismatch")
+    geo["features"].extend(json.loads(supplement)["features"])
+    combined = json.dumps(geo, ensure_ascii=False, separators=(",", ":")).encode()
+    if hashlib.sha256(combined).hexdigest() != metadata["derived_sha256"]:
+        raise ValueError("Combined geography checksum mismatch")
+    return geo, metadata
 
 
 @lru_cache

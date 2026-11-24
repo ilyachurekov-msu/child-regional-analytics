@@ -7,6 +7,29 @@ from tests.test_etl import write, URL
 from app.etl.importer import import_file
 
 
+def test_coverage_distinguishes_zero_from_missing(session, tmp_path):
+    def override():
+        yield session
+
+    app.dependency_overrides[get_session] = override
+    try:
+        with TestClient(app) as client:
+            empty = client.get('/api/v1/regional/data-quality').json()
+            assert empty['regions_in_profile'] == 89
+            assert empty['regions_with_data'] == 0
+            path = tmp_path / 'coverage.csv'
+            write(path, ['0', '', ''])
+            import_file(session, path, URL, 'Synthetic coverage fixture')
+            result = client.get('/api/v1/regional/data-quality').json()
+            assert result['regions_with_data'] == 1
+            row = next(r for r in result['region_coverage'] if r['region_id'] == 'RU-77')
+            assert row['observations'] == row['periods'] == row['indicators'] == 1
+            absent = next(r for r in result['region_coverage'] if r['region_id'] == 'RU-80')
+            assert absent['observations'] == 0 and absent['first_period'] is None
+    finally:
+        app.dependency_overrides.clear()
+
+
 def test_api(session, tmp_path):
     def override():
         yield session
@@ -16,7 +39,7 @@ def test_api(session, tmp_path):
         with TestClient(app) as client:
             response = client.get("/api/v1/regions", params={"limit": 2})
             assert response.status_code == 200
-            assert response.json()["total"] == 85
+            assert response.json()["total"] == 89
             assert len(response.json()["items"]) == 2
             assert client.get("/api/v1/regions/unknown").status_code == 404
             invalid = client.get("/api/v1/regional/values?limit=0")

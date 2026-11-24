@@ -1,5 +1,6 @@
 """Russian analytical UI; no observations are created by the interface."""
 
+from app.contract_version import CONTRACT_VERSION
 from pathlib import Path
 import httpx
 import pandas as pd
@@ -11,7 +12,7 @@ from app.services.analytics import construct_index
 
 st.set_page_config(page_title="Региональная аналитика", layout="wide")
 st.title("Региональная аналитика")
-st.caption("Навигатор детства · открытая официальная статистика · контракт 1.0.0")
+st.caption(f"Навигатор детства · открытая официальная статистика · контракт {CONTRACT_VERSION}")
 
 
 def get(route, **params):
@@ -97,6 +98,7 @@ code = st.sidebar.selectbox(
 )
 indicator = next(i for i in indicators if i["code"] == code)
 quality = get("regional/data-quality", limit=10)
+st.caption(f"Данные загружены для {quality['regions_with_data']} из {quality['regions_in_profile']} регионов. Географическое покрытие и наличие статистики учитываются отдельно.")
 if not quality["current_observations"]:
     st.warning(
         "Реальные статистические значения ещё не загружены. Демонстрационные данные не используются."
@@ -253,7 +255,9 @@ elif page == "Карта России":
     if geography.exists():
         from app.services.geography import geography as load_geography
         geo, provenance = load_geography()
-        st.caption('Границы: geoBoundaries / OpenStreetMap, 2017, ODbL 1.0. Покрытие: 83 региона; отсутствуют ' + ', '.join(provenance['missing_regions']))
+        st.caption(f"Границы: geoBoundaries / OpenStreetMap, 2017, ODbL 1.0. Географический профиль: {len(geo['features'])} регионов. Исторические контуры; статистическое покрытие показано отдельно.")
+        if provenance['missing_regions']:
+            st.warning('Геометрии отсутствуют: ' + ', '.join(provenance['missing_regions']))
         # Offline choropleth; no tiles or third-party network required.
         base = pd.DataFrame(regions)
         values = (
@@ -324,6 +328,12 @@ else:
     st.subheader("Качество и актуальность данных")
     data = get("regional/data-quality", limit=1000)
     st.write("Последняя загрузка:", data["latest_load"] or "отсутствует")
+    st.write("Покрытие регионов: ненулевые и нулевые значения учитываются, пропуски исключаются")
+    coverage = pd.DataFrame(data["region_coverage"]).rename(columns={
+        'name': 'Регион', 'observations': 'Наблюдений', 'periods': 'Периодов',
+        'indicators': 'Показателей', 'first_period': 'Начало', 'last_period': 'Конец',
+    })
+    st.dataframe(coverage, hide_index=True)
     st.write("Журнал загрузок")
     st.dataframe(pd.DataFrame(data["batches"]), hide_index=True)
     st.write("Ошибки, пропуски и очередь сопоставления регионов")

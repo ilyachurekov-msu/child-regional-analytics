@@ -1,3 +1,4 @@
+from app.contract_version import CONTRACT_VERSION
 from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict
@@ -24,7 +25,7 @@ class SourceContract(BaseModel):
 
 class PlatformContract(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    contract_version: str = "1.0.0"
+    contract_version: str = CONTRACT_VERSION
     regions: list[RegionOut]
     topics: list[TopicContract]
     sources: list[SourceContract]

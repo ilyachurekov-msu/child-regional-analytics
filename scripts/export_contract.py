@@ -1,3 +1,4 @@
+from app.contract_version import CONTRACT_VERSION
 import json
 from pathlib import Path
 from app.schemas.contracts import PlatformContract
@@ -9,11 +10,11 @@ if __name__ == "__main__":
     contract.update(
         {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "$id": "urn:navigator-childhood:platform:1.0.0",
-            "x-contract-version": "1.0.0",
+            "$id": f"urn:navigator-childhood:platform:{CONTRACT_VERSION}",
+            "x-contract-version": CONTRACT_VERSION,
         }
     )
-    contract["properties"]["contract_version"]["const"] = "1.0.0"
+    contract["properties"]["contract_version"]["const"] = CONTRACT_VERSION
     Path("contracts/platform.schema.json").write_text(
         json.dumps(contract, ensure_ascii=False, indent=2), encoding="utf-8"
     )

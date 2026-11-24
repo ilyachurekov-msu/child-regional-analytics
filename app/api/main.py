@@ -1,3 +1,4 @@
+from app.contract_version import CONTRACT_VERSION
 from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
@@ -119,7 +120,7 @@ def page(session, query, limit, offset, transform=lambda r: r):
 @app.get("/api/v1/health")
 def health(session: DB):
     session.execute(text("SELECT 1"))
-    return {"status": "ok", "contract_version": "1.0.0"}
+    return {"status": "ok", "contract_version": CONTRACT_VERSION}
 
 
 @app.get("/api/v1/regions", response_model=Page[RegionOut])
@@ -273,6 +274,23 @@ def quality(
         select(func.count()).select_from(Value).where(Value.is_current.is_(True))
     )
     result["latest_load"] = session.scalar(select(func.max(Value.loaded_at)))
+    coverage = session.execute(
+        select(
+            Region.region_id, Region.name, func.count(Value.value),
+            func.count(func.distinct(Value.period_start)),
+            func.count(func.distinct(Value.indicator_id)),
+            func.min(Value.period_start), func.max(Value.period_end),
+        ).outerjoin(Value, (Value.region_id == Region.region_id) &
+                    Value.is_current.is_(True) & Value.value.is_not(None))
+        .where(Region.region_id.like("RU-%"))
+        .group_by(Region.region_id, Region.name).order_by(Region.name)
+    ).all()
+    result["region_coverage"] = [
+        dict(region_id=r[0], name=r[1], observations=r[2], periods=r[3],
+             indicators=r[4], first_period=r[5], last_period=r[6]) for r in coverage
+    ]
+    result["regions_in_profile"] = len(coverage)
+    result["regions_with_data"] = sum(r[2] > 0 for r in coverage)
     return result
 
 

@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 import httpx
+from app.etl.official_http import OfficialHTTP
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from app.db import engine
@@ -47,10 +48,7 @@ def main():
             original = args.file.read_bytes()
         else:
             # TLS remains verified. No CAPTCHA, alternate-host or access-control bypass.
-            with httpx.Client(timeout=30, follow_redirects=False) as client:
-                response = client.get(source["url"])
-                response.raise_for_status()
-                original = response.content
+            original = OfficialHTTP().get(source["url"])
         is_html = source["format"] == "html"
         if (not is_html and not original.startswith(b"%PDF-")) or len(
             original

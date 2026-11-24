@@ -9,13 +9,16 @@ from app.etl.comparability import validate_series
 from app.services.source_identity import canonical_source_uuid
 
 
-def test_geography_is_attributed_mapped_and_incomplete_honestly():
+def test_geography_matches_the_complete_89_profile():
     geo, meta = geography()
     ids = [f["properties"]["region_id"] for f in geo["features"]]
-    assert len(set(ids)) == len(ids) == 83
+    assert len(set(ids)) == len(ids) == 89
     assert meta["boundaryYearRepresented"] == "2017"
     assert meta["boundaryLicense"] == "Open Data Commons Open Database License 1.0"
-    assert set(meta["missing_regions"]) == {"RU-91", "RU-92"}
+    assert not meta["missing_regions"]
+    assert {"RU-80", "RU-81", "RU-84", "RU-85", "RU-91", "RU-92"} <= set(ids)
+    assert len(meta["sources"]) == 2
+    assert meta["datalens_audit"]["distinct_region_names"] == 89
     known = {
         r["region_id"]
         for r in csv.DictReader(Path("contracts/regions.csv").open(encoding="utf-8"))
