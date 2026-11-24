@@ -5,3 +5,9 @@
 __pycache__
 .pytest_cache
 data/*.db
+child-media-monitor
+child-practices-search
+data/raw
+data/archive
+test-results
+.ruff_cache

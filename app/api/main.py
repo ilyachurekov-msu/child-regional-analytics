@@ -1,3 +1,4 @@
+from app.contract_version import CONTRACT_VERSION
 from typing import Annotated, Literal
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.encoders import jsonable_encoder
@@ -13,7 +14,7 @@ from app.services.export import export_rows
 
 app = FastAPI(
     title="Региональная аналитика",
-    version="0.1.0",
+    version="0.2.0",
     openapi_url="/api/v1/openapi.json",
     docs_url="/api/v1/docs",
     responses={
@@ -26,7 +27,7 @@ app = FastAPI(
 DB = Annotated[Session, Depends(get_session)]
 Limit = Annotated[int, Query(ge=1, le=1000)]
 Offset = Annotated[int, Query(ge=0)]
-Year = Annotated[int | None, Query(ge=2019, le=2100)]
+Year = Annotated[int | None, Query(ge=1900, le=2100)]
 
 
 @app.get("/api/v1/regional/indicator-metadata")
@@ -119,7 +120,7 @@ def page(session, query, limit, offset, transform=lambda r: r):
 @app.get("/api/v1/health")
 def health(session: DB):
     session.execute(text("SELECT 1"))
-    return {"status": "ok", "contract_version": "1.0.0"}
+    return {"status": "ok", "contract_version": CONTRACT_VERSION}
 
 
 @app.get("/api/v1/regions", response_model=Page[RegionOut])
@@ -225,7 +226,7 @@ def comparison(
 
 @app.get("/api/v1/regional/deviations")
 def deviation_api(
-    session: DB, indicator_code: str, year: Annotated[int, Query(ge=2019, le=2100)]
+    session: DB, indicator_code: str, year: Annotated[int, Query(ge=1900, le=2100)]
 ):
     indicator = session.scalar(
         select(Indicator).where(Indicator.code == indicator_code)
@@ -240,7 +241,7 @@ def deviation_api(
     ]
     return {
         "items": deviations(rows, indicator.direction),
-        "warning": "Сравнение абсолютных величин зависит от размера региона. При неоднозначном направлении рейтинг неблагополучия не определяется.",
+        "warning": "Медиана рассчитана только по субъектам с загруженными данными, а не по всей России. Сравнение абсолютных величин зависит от размера региона. При неоднозначном направлении рейтинг неблагополучия не определяется.",
     }
 
 
@@ -273,6 +274,23 @@ def quality(
         select(func.count()).select_from(Value).where(Value.is_current.is_(True))
     )
     result["latest_load"] = session.scalar(select(func.max(Value.loaded_at)))
+    coverage = session.execute(
+        select(
+            Region.region_id, Region.name, func.count(Value.value),
+            func.count(func.distinct(Value.period_start)),
+            func.count(func.distinct(Value.indicator_id)),
+            func.min(Value.period_start), func.max(Value.period_end),
+        ).outerjoin(Value, (Value.region_id == Region.region_id) &
+                    Value.is_current.is_(True) & Value.value.is_not(None))
+        .where(Region.region_id.like("RU-%"))
+        .group_by(Region.region_id, Region.name).order_by(Region.name)
+    ).all()
+    result["region_coverage"] = [
+        dict(region_id=r[0], name=r[1], observations=r[2], periods=r[3],
+             indicators=r[4], first_period=r[5], last_period=r[6]) for r in coverage
+    ]
+    result["regions_in_profile"] = len(coverage)
+    result["regions_with_data"] = sum(r[2] > 0 for r in coverage)
     return result
 
 

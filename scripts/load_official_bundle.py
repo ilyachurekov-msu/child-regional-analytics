@@ -38,6 +38,16 @@ def load_bundle(session):
 if __name__ == "__main__":
     with Session(engine()) as session, session.begin():
         batch = load_bundle(session)
+        meta = json.loads(Path('data/official/provenance-v02.json').read_text(encoding='utf-8'))
+        extended = Path('data/official', meta['normalized_file'])
+        if hashlib.sha256(extended.read_bytes().replace(b'\r\n', b'\n')).hexdigest() != meta['normalized_sha256']:
+            raise ValueError('v0.2 bundle checksum mismatch')
+        batch = import_file(session, extended, meta['source_url'], meta['source_name'], meta['publisher'], parser_version=meta['adapter'])
+        batch.original_checksum = meta['source_sha256']
+        if batch.errors or batch.status == 'failed':
+            raise ValueError('v0.2 official subset failed; transaction rolled back')
+        from scripts.load_press_release import load_press_release
+        load_press_release(session)
         print(
             f"Official subset: batch={batch.batch_id}; rows={batch.rows_processed}; status={batch.status}"
         )

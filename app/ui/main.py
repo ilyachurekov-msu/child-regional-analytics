@@ -1,6 +1,6 @@
 """Russian analytical UI; no observations are created by the interface."""
 
-import json
+from app.contract_version import CONTRACT_VERSION
 from pathlib import Path
 import httpx
 import pandas as pd
@@ -12,7 +12,7 @@ from app.services.analytics import construct_index
 
 st.set_page_config(page_title="Региональная аналитика", layout="wide")
 st.title("Региональная аналитика")
-st.caption("Навигатор детства · открытая официальная статистика · контракт 1.0.0")
+st.caption(f"Навигатор детства · открытая официальная статистика · контракт {CONTRACT_VERSION}")
 
 
 def get(route, **params):
@@ -91,12 +91,14 @@ page = st.sidebar.radio(
         "Качество и актуальность данных",
         "Экспорт аналитической справки",
     ],
+    key='page',
 )
 code = st.sidebar.selectbox(
     "Показатель", list(indicator_names), format_func=indicator_names.get
 )
 indicator = next(i for i in indicators if i["code"] == code)
 quality = get("regional/data-quality", limit=10)
+st.caption(f"Данные загружены для {quality['regions_with_data']} из {quality['regions_in_profile']} регионов. Географическое покрытие и наличие статистики учитываются отдельно.")
 if not quality["current_observations"]:
     st.warning(
         "Реальные статистические значения ещё не загружены. Демонстрационные данные не используются."
@@ -172,7 +174,7 @@ elif page in (
     "Динамика показателей",
     "Экспорт аналитической справки",
 ):
-    region_id = st.selectbox("Регион", list(region_names), format_func=region_names.get)
+    region_id = st.selectbox("Регион", list(region_names), format_func=region_names.get, key='profile_region')
     if page == "Паспорт региона":
         profile = get("regional/profiles/" + region_id)
         st.subheader(region_names[region_id])
@@ -180,6 +182,8 @@ elif page in (
         df = frame(profile["observations"])
         if not df.empty:
             own = df[df.region_id == region_id]
+            if own.empty:
+                st.info("Наблюдений выбранного региона пока нет. Ниже могут отображаться только отдельно опубликованные агрегаты РФ/ФО.")
             if not own.empty:
                 latest_year = own.year.max()
                 st.write(f"Последний период региона: {latest_year}")
@@ -245,11 +249,19 @@ elif page == "Сравнение регионов":
         )
 
 elif page == "Карта России":
-    year = st.number_input("Год", 2019, 2100, 2023)
+    available = frame(all_values(indicator_code=code))
+    if not available.empty:
+        available = available[available.region_id.isin(region_names)]
+    latest_year = int(available.year.max()) if not available.empty else 2023
+    year = st.number_input("Год", 1900, 2100, latest_year)
     df = frame(all_values(indicator_code=code, year=year))
-    geography = Path("data/regions.geojson")
+    geography = Path("data/regions.geojson.gz")
     if geography.exists():
-        geo = json.loads(geography.read_text(encoding="utf-8"))
+        from app.services.geography import geography as load_geography
+        geo, provenance = load_geography()
+        st.caption(f"Границы: geoBoundaries / OpenStreetMap, 2017, ODbL 1.0. Географический профиль: {len(geo['features'])} регионов. Исторические контуры; статистическое покрытие показано отдельно.")
+        if provenance['missing_regions']:
+            st.warning('Геометрии отсутствуют: ' + ', '.join(provenance['missing_regions']))
         # Offline choropleth; no tiles or third-party network required.
         base = pd.DataFrame(regions)
         values = (
@@ -259,7 +271,7 @@ elif page == "Карта России":
         )
         merged = base.merge(values, on="region_id", how="left")
         fig = go.Figure(
-            go.Choropleth(
+            go.Choroplethmap(
                 geojson=geo,
                 featureidkey="properties.region_id",
                 locations=merged.region_id,
@@ -267,25 +279,41 @@ elif page == "Карта России":
                 colorscale=[[0, "#d1d5db"], [1, "#d1d5db"]],
                 showscale=False,
                 text=merged.name,
+                customdata=merged.region_id,
                 hovertemplate="%{text}: нет данных<extra></extra>",
             )
         )
         valid = merged[merged.value.notna()]
         fig.add_trace(
-            go.Choropleth(
+            go.Choroplethmap(
                 geojson=geo,
                 featureidkey="properties.region_id",
                 locations=valid.region_id,
                 z=valid.value,
                 text=valid.name,
+                customdata=valid.region_id,
                 colorscale="Blues",
                 colorbar_title=indicator["unit"],
                 hovertemplate="%{text}: %{z}<extra></extra>",
             )
         )
-        fig.update_geos(fitbounds="locations", visible=False)
-        st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(map=dict(style='white-bg', center=dict(lon=100, lat=65), zoom=1.3),
+                          clickmode='event+select', height=560, margin=dict(l=0, r=0, t=10, b=10))
+        def select_on_map():
+            points = st.session_state['regional_map']['selection']['points']
+            if points:
+                selected_region = points[0].get('location') or points[0].get('customdata')
+                if selected_region in region_names:
+                    st.session_state['profile_region'] = selected_region
+                    st.session_state['page'] = 'Паспорт региона'
+
+        st.plotly_chart(fig, use_container_width=True, key='regional_map', on_select=select_on_map)
         st.caption(f"{year} · {indicator['unit']} · Серый цвет: нет данных")
+        profile_target = st.selectbox('Профиль региона на карте', list(region_names), format_func=region_names.get)
+        def open_profile():
+            st.session_state['profile_region'] = profile_target
+            st.session_state['page'] = 'Паспорт региона'
+        st.button('Открыть профиль региона', on_click=open_profile)
     else:
         st.info(
             "Географические границы ещё не подключены. Для автономной карты требуется проверенный data/regions.geojson с properties.region_id. Доступные значения показаны ниже."
@@ -304,6 +332,12 @@ else:
     st.subheader("Качество и актуальность данных")
     data = get("regional/data-quality", limit=1000)
     st.write("Последняя загрузка:", data["latest_load"] or "отсутствует")
+    st.write("Покрытие регионов: ненулевые и нулевые значения учитываются, пропуски исключаются")
+    coverage = pd.DataFrame(data["region_coverage"]).rename(columns={
+        'name': 'Регион', 'observations': 'Наблюдений', 'periods': 'Периодов',
+        'indicators': 'Показателей', 'first_period': 'Начало', 'last_period': 'Конец',
+    })
+    st.dataframe(coverage, hide_index=True)
     st.write("Журнал загрузок")
     st.dataframe(pd.DataFrame(data["batches"]), hide_index=True)
     st.write("Ошибки, пропуски и очередь сопоставления регионов")

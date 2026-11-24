@@ -1,0 +1,12 @@
+[
+  {
+    "indicator_code": "births",
+    "region": "RU",
+    "period_start": "2024-01-01",
+    "period_end": "2024-12-31",
+    "value": "1222408",
+    "unit": "человек",
+    "published_at": null,
+    "data_status": "provisional"
+  }
+]

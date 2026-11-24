@@ -1,3 +1,4 @@
+from app.contract_version import CONTRACT_VERSION
 import csv
 import hashlib
 import json
@@ -8,7 +9,7 @@ from uuid import UUID
 def main():
     root = Path("shared-contracts/src/navigator_shared_contracts")
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["version"] == "1.0.0"
+    assert manifest["version"] == CONTRACT_VERSION
     for name, expected in manifest["resources_sha256"].items():
         original = Path("contracts", name).read_bytes().replace(b"\r\n", b"\n")
         packaged = (root / name).read_bytes().replace(b"\r\n", b"\n")

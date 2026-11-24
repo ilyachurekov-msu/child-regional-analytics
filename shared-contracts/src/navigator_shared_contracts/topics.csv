@@ -1,0 +1,9 @@
+topic_id,name,parent_topic_id
+demography,Демография,
+family,Семья,
+education,Образование,
+healthcare,Здравоохранение,
+social_support,Социальная поддержка,
+orphanhood,Сиротство и семейное устройство,
+safety,Безопасность,
+infrastructure,Инфраструктура,

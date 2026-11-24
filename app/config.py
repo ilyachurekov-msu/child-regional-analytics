@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     api_url: str = "http://localhost:8000"
     raw_dir: str = "data/archive"
     core_managed_externally: bool = False
+    stat_updates_enabled: bool = False
+    stat_update_interval: int = 86400
 
 
 @lru_cache

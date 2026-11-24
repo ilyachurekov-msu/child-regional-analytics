@@ -1,15 +1,19 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "platform_agreed": false,
   "status": "candidate, regional IDs retained pending cross-module reconciliation",
-  "source_uuid_namespace": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
+  "source_uuid_namespace": "72c4db98-6752-5fe0-a56d-af600628f13b",
+  "legacy_source_uuid_namespace": "6ba7b811-9dad-11d1-80b4-00c04fd430c8",
   "resources_sha256": {
-    "regions.csv": "0748907285863c4a0d9661414040a7bfec320d64e94d37c3298a5233fa4eebd7",
+    "regions.csv": "c33339583bd5f1186ce2b387d6f0b920339ab9d77770dc008bf85945110f8dbe",
     "topics.json": "2ad8d8e7fff60c99052499b595b1956145bdc929b43884185ba522d6079b656f",
-    "platform.schema.json": "98d4adf9eb2300dd470de0c139d85f359f36eddd9d5e85ad1005099379b019ec"
+    "topics.csv": "1e30faa1d7bf59eba4ef293c7819f0a216c9c6a6d1a0654daf519ec45148eff3",
+    "platform.schema.json": "cd5862f01894c60e819209502380af491683ab3fbea4abfe7374adf726962bf0",
+    "identity.py": "13b1d703bc060d1ca79ae547ae02fdd3624dc2793341e3d681ec499673d05b1e",
+    "source.schema.json": "28eccde867d5de638ca0f77783d03b4dbb99ccee32eee675f6ae81d4414b9211"
   },
   "other_modules": {
-    "media": "incompatible IDs and source namespace",
+    "media": "read-only verified: numeric region IDs after migration0003; canonical source procedure aligned through aliases",
     "practices": "not available for comparison"
   }
 }

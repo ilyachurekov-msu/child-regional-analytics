@@ -42,5 +42,14 @@ services:
       api:
         condition: service_healthy
     volumes: ["./data:/app/data"]
+  updates:
+    profiles: [updates]
+    build: .
+    env_file: .env
+    volumes: ["./data:/app/data"]
+    command: python -m scripts.update_worker
+    depends_on:
+      api:
+        condition: service_healthy
 volumes:
   postgres_data:

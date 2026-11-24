@@ -104,7 +104,7 @@ def test_migrated_postgres_schema_and_indexes(pg_session):
     assert pg_session.scalar(
         text("SELECT extversion FROM pg_extension WHERE extname='vector'")
     )
-    assert pg_session.scalar(text("SELECT version_num FROM alembic_version")) == "0002"
+    assert pg_session.scalar(text("SELECT version_num FROM alembic_version")) == "0005"
     schemas = set(
         pg_session.scalars(text("SELECT schema_name FROM information_schema.schemata"))
     )
@@ -117,6 +117,17 @@ def test_migrated_postgres_schema_and_indexes(pg_session):
     )
     assert any("uq_values_current" in i and "WHERE is_current" in i for i in indexes)
     assert any("revision_number" in i and "UNIQUE" in i for i in indexes)
+
+
+def test_89_profile_reference_data(pg_session):
+    rows = pg_session.execute(text(
+        "SELECT region_id,name,federal_district,valid_from FROM core.regions "
+        "WHERE region_id IN ('RU-80','RU-81','RU-84','RU-85') ORDER BY region_id"
+    )).all()
+    assert len(rows) == 4
+    assert [r[0] for r in rows] == ['RU-80', 'RU-81', 'RU-84', 'RU-85']
+    assert all(r[2] == '' and str(r[3]) == '2023-01-01' for r in rows)
+    assert pg_session.scalar(text("SELECT count(*) FROM core.regions WHERE region_id LIKE 'RU-%'")) == 89
 
 
 @pytest.mark.parametrize("fmt", ["csv", "xlsx", "json"])
