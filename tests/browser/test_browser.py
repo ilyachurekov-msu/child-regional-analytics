@@ -57,6 +57,10 @@ def test_seven_pages_and_screenshots(page):
                 )
         expect(page.get_by_test_id("stException")).to_have_count(0)
         if name == 'Карта России':
+            year = page.get_by_role('spinbutton', name='Год', exact=True)
+            year.fill('2022')
+            year.press('Enter')
+            expect(page.get_by_text('2022 · человек · Серый цвет: нет данных', exact=True)).to_be_visible(timeout=30000)
             expect(page.locator('.maplibregl-canvas')).to_be_visible(timeout=30000)
             page.wait_for_function('''() => {
                 const p = document.querySelector('.js-plotly-plot');
