@@ -182,6 +182,8 @@ elif page in (
         df = frame(profile["observations"])
         if not df.empty:
             own = df[df.region_id == region_id]
+            if own.empty:
+                st.info("Наблюдений выбранного региона пока нет. Ниже могут отображаться только отдельно опубликованные агрегаты РФ/ФО.")
             if not own.empty:
                 latest_year = own.year.max()
                 st.write(f"Последний период региона: {latest_year}")
@@ -248,6 +250,8 @@ elif page == "Сравнение регионов":
 
 elif page == "Карта России":
     available = frame(all_values(indicator_code=code))
+    if not available.empty:
+        available = available[available.region_id.isin(region_names)]
     latest_year = int(available.year.max()) if not available.empty else 2023
     year = st.number_input("Год", 1900, 2100, latest_year)
     df = frame(all_values(indicator_code=code, year=year))

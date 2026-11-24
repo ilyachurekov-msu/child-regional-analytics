@@ -23,7 +23,20 @@
     "last_successful_load": null,
     "observations_loaded": null,
     "observations_in_official_bundle": 25,
-    "load_status": "database-specific; see API quality endpoint"
+    "load_status": "database-specific; see API quality endpoint",
+    "additional_published_aggregates": [
+      {
+        "region_id": "RU",
+        "year": 2024,
+        "value": 1222408,
+        "unit": "человек",
+        "status": "provisional",
+        "source_url": "https://rosstat.gov.ru/folder/313/document/255130",
+        "published_date": "2025-02-21",
+        "provenance": "data/official/rosstat-births-2024-provenance.json",
+        "comparability": "Single national operational total; territorial details unspecified; no same-year regional series currently loaded"
+      }
+    ]
   },
   {
     "code": "deaths",

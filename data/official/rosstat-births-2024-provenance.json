@@ -1,0 +1,22 @@
+{
+  "source_url": "https://rosstat.gov.ru/folder/313/document/255130",
+  "source_name": "Росстат: оперативный годовой итог рождаемости за 2024 год",
+  "publisher": "Росстат",
+  "published_date": "2025-02-21",
+  "retrieved_at": "2026-11-24T14:27:42.154656+00:00",
+  "region_id": "RU",
+  "years": [
+    2024
+  ],
+  "observations": 1,
+  "indicator": "births",
+  "unit": "человек",
+  "data_status": "provisional",
+  "evidence_file": "rosstat-births-2024-evidence.txt",
+  "evidence_sha256": "51a7e177ac1aa342039aa432b57f644745c8732c40c9d7badf2a9013e103c654",
+  "normalized_file": "rosstat-births-2024.json",
+  "normalized_sha256": "ca2e6fad0900423bbd7380e7b0da01cc168c99a4a7a53df01edaf1e2f83af367",
+  "acquisition": "Direct reading of the official publication in desktop browser; a short displayed-text excerpt is archived, not the original HTTP bytes. No raw-original checksum is asserted.",
+  "methodology": "Published operational total of live births for the full calendar year. The December-only figure and rounded marriages count are excluded. No regional average or inferred values.",
+  "comparability_limits": "The press release does not detail territorial coverage or all statistical methodology footnotes. One RF total for 2024 does not establish a 5-year national series or coverage of 89 regions. No same-year regional comparison is currently possible. Observations have no publication timestamp because the source timezone is not established; the known publication date is retained here."
+}

@@ -46,6 +46,8 @@ if __name__ == "__main__":
         batch.original_checksum = meta['source_sha256']
         if batch.errors or batch.status == 'failed':
             raise ValueError('v0.2 official subset failed; transaction rolled back')
+        from scripts.load_press_release import load_press_release
+        load_press_release(session)
         print(
             f"Official subset: batch={batch.batch_id}; rows={batch.rows_processed}; status={batch.status}"
         )

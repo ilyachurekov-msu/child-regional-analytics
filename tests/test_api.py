@@ -26,6 +26,8 @@ def test_coverage_distinguishes_zero_from_missing(session, tmp_path):
             assert row['observations'] == row['periods'] == row['indicators'] == 1
             absent = next(r for r in result['region_coverage'] if r['region_id'] == 'RU-80')
             assert absent['observations'] == 0 and absent['first_period'] is None
+            profile = client.get('/api/v1/regional/profiles/RU-80')
+            assert profile.status_code == 200 and profile.json()['observations'] == []
     finally:
         app.dependency_overrides.clear()
 
