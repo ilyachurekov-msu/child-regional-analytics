@@ -40,7 +40,7 @@ if __name__ == "__main__":
         batch = load_bundle(session)
         meta = json.loads(Path('data/official/provenance-v02.json').read_text(encoding='utf-8'))
         extended = Path('data/official', meta['normalized_file'])
-        if hashlib.sha256(extended.read_bytes()).hexdigest() != meta['normalized_sha256']:
+        if hashlib.sha256(extended.read_bytes().replace(b'\r\n', b'\n')).hexdigest() != meta['normalized_sha256']:
             raise ValueError('v0.2 bundle checksum mismatch')
         batch = import_file(session, extended, meta['source_url'], meta['source_name'], meta['publisher'], parser_version=meta['adapter'])
         if batch.errors or batch.status == 'failed':

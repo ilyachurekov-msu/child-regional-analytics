@@ -1,5 +1,6 @@
 import csv
 import json
+import hashlib
 from pathlib import Path
 from decimal import Decimal
 import pytest
@@ -26,6 +27,9 @@ def test_geography_is_attributed_mapped_and_incomplete_honestly():
 
 
 def test_official_extension_has_no_imputation():
+    meta = json.loads(Path('data/official/provenance-v02.json').read_text(encoding='utf-8'))
+    payload = Path('data/official/kemerovo-2018-2022.json').read_bytes().replace(b'\r\n', b'\n')
+    assert hashlib.sha256(payload).hexdigest() == meta['normalized_sha256']
     rows = json.loads(
         Path("data/official/kemerovo-2018-2022.json").read_text(encoding="utf-8")
     )
