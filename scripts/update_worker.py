@@ -1,18 +1,18 @@
 """Optional local scheduler. Disabled by default; never stores a database in CI."""
 
-import os
 import subprocess
 import sys
 import time
 import json
 from pathlib import Path
+from app.config import settings
 
 
 def main():
-    if os.getenv("STAT_UPDATES_ENABLED", "false").lower() != "true":
+    if not settings().stat_updates_enabled:
         print("Statistical update scheduler disabled")
         return
-    interval = max(3600, int(os.getenv("STAT_UPDATE_INTERVAL", "86400")))
+    interval = max(3600, settings().stat_update_interval)
     while True:
         manifest = json.loads(
             Path("data/source-manifest.json").read_text(encoding="utf-8")

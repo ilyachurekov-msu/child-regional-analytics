@@ -289,8 +289,10 @@ elif page == "Карта России":
                 hovertemplate="%{text}: %{z}<extra></extra>",
             )
         )
-        fig.update_geos(fitbounds="locations", visible=False, projection_rotation_lon=-100)
-        fig.update_layout(clickmode='event+select')
+        fig.update_geos(fitbounds=False, visible=False, projection_type='mercator',
+                        projection_rotation_lon=-100, center_lon=0, center_lat=65,
+                        projection_scale=1.8)
+        fig.update_layout(clickmode='event+select', height=560, margin=dict(l=0, r=0, t=10, b=10))
         def select_on_map():
             points = st.session_state['regional_map']['selection']['points']
             if points:
