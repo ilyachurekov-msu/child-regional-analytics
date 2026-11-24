@@ -20,7 +20,8 @@ def main():
         years=list(range(2018, 2023)),
         normalized_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
         normalized_file=path.name,
-        retrieved_at=datetime.now(timezone.utc).isoformat(),
+        processed_at=datetime.now(timezone.utc).isoformat(),
+        bundle_version='0.2.0',
         adapter="kemerovo-yearbook-html/1.1.0",
         comparability="Annual whole-population absolute ZAGS counts; rates and urban/rural groups excluded",
     )

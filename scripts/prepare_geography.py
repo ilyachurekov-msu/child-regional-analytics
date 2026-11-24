@@ -10,9 +10,9 @@ from pathlib import Path
 def main():
     raw = Path("data/raw/rus-adm1.geojson").read_bytes()
     metadata = json.loads(Path("data/raw/geo-metadata.json").read_text())
-    mapping_path = Path("child-media-monitor/shared-contracts/region-mapping.csv")
+    mapping_path = Path("contracts/geography-crosswalk.csv")
     mapping = {
-        r["old_region_id"]: r["region_id"]
+        r["shapeISO"]: r["region_id"]
         for r in csv.DictReader(mapping_path.open(encoding="utf-8"))
     }
     geo = json.loads(raw)

@@ -251,7 +251,7 @@ elif page == "Карта России":
     df = frame(all_values(indicator_code=code, year=year))
     geography = Path("data/regions.geojson.gz")
     if geography.exists():
-        from app.services.geography import geography as load_geography
+        from app.services.geography import plotly_geography as load_geography
         geo, provenance = load_geography()
         st.caption('Границы: geoBoundaries / OpenStreetMap, 2017, ODbL 1.0. Покрытие: 83 региона; отсутствуют ' + ', '.join(provenance['missing_regions']))
         # Offline choropleth; no tiles or third-party network required.
@@ -289,7 +289,7 @@ elif page == "Карта России":
                 hovertemplate="%{text}: %{z}<extra></extra>",
             )
         )
-        fig.update_geos(fitbounds="locations", visible=False)
+        fig.update_geos(fitbounds="locations", visible=False, projection_rotation_lon=-100)
         fig.update_layout(clickmode='event+select')
         def select_on_map():
             points = st.session_state['regional_map']['selection']['points']

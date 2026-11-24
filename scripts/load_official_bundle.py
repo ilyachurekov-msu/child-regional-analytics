@@ -43,6 +43,7 @@ if __name__ == "__main__":
         if hashlib.sha256(extended.read_bytes().replace(b'\r\n', b'\n')).hexdigest() != meta['normalized_sha256']:
             raise ValueError('v0.2 bundle checksum mismatch')
         batch = import_file(session, extended, meta['source_url'], meta['source_name'], meta['publisher'], parser_version=meta['adapter'])
+        batch.original_checksum = meta['source_sha256']
         if batch.errors or batch.status == 'failed':
             raise ValueError('v0.2 official subset failed; transaction rolled back')
         print(
