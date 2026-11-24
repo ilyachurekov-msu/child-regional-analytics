@@ -8,5 +8,6 @@ COPY migrations ./migrations
 COPY scripts ./scripts
 COPY alembic.ini ./
 COPY data/official ./data/official
+COPY data/regions.geojson.gz data/geography-provenance.json data/GEOGRAPHY-LICENSE.md ./data/
 ENV PYTHONUNBUFFERED=1
 CMD ["uvicorn", "app.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

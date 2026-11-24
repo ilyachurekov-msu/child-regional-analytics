@@ -80,7 +80,7 @@ jobs:
       - name: Verify persistence after database restart
         run: |
           docker compose restart db
-          python -m scripts.smoke --expected-observations 40
+          python -m scripts.smoke --expected-observations 45
       - name: Collect container evidence
         if: always()
         run: |

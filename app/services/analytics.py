@@ -71,6 +71,8 @@ def deviations(rows, direction):
         return []
     mid = median(r["value"] for r in valid)
     national = next((r["value"] for r in rows if r["region_id"] == "RU"), None)
+    district_values = {r['federal_district']: r['value'] for r in rows
+                       if r['region_id'].startswith('FD-') and r.get('federal_district')}
     result = [
         dict(
             r,
@@ -79,6 +81,8 @@ def deviations(rows, direction):
             difference_from_russia=r["value"] - national
             if national is not None
             else None,
+            difference_from_federal_district=(r['value'] - district_values[r['federal_district']])
+            if r.get('federal_district') in district_values and district_values[r['federal_district']] is not None else None,
             unfavorable_direction=direction,
         )
         for r in valid

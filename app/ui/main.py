@@ -1,6 +1,5 @@
 """Russian analytical UI; no observations are created by the interface."""
 
-import json
 from pathlib import Path
 import httpx
 import pandas as pd
@@ -91,6 +90,7 @@ page = st.sidebar.radio(
         "Качество и актуальность данных",
         "Экспорт аналитической справки",
     ],
+    key='page',
 )
 code = st.sidebar.selectbox(
     "Показатель", list(indicator_names), format_func=indicator_names.get
@@ -172,7 +172,7 @@ elif page in (
     "Динамика показателей",
     "Экспорт аналитической справки",
 ):
-    region_id = st.selectbox("Регион", list(region_names), format_func=region_names.get)
+    region_id = st.selectbox("Регион", list(region_names), format_func=region_names.get, key='profile_region')
     if page == "Паспорт региона":
         profile = get("regional/profiles/" + region_id)
         st.subheader(region_names[region_id])
@@ -245,11 +245,15 @@ elif page == "Сравнение регионов":
         )
 
 elif page == "Карта России":
-    year = st.number_input("Год", 2019, 2100, 2023)
+    available = frame(all_values(indicator_code=code))
+    latest_year = int(available.year.max()) if not available.empty else 2023
+    year = st.number_input("Год", 1900, 2100, latest_year)
     df = frame(all_values(indicator_code=code, year=year))
-    geography = Path("data/regions.geojson")
+    geography = Path("data/regions.geojson.gz")
     if geography.exists():
-        geo = json.loads(geography.read_text(encoding="utf-8"))
+        from app.services.geography import geography as load_geography
+        geo, provenance = load_geography()
+        st.caption('Границы: geoBoundaries / OpenStreetMap, 2017, ODbL 1.0. Покрытие: 83 региона; отсутствуют ' + ', '.join(provenance['missing_regions']))
         # Offline choropleth; no tiles or third-party network required.
         base = pd.DataFrame(regions)
         values = (
@@ -267,6 +271,7 @@ elif page == "Карта России":
                 colorscale=[[0, "#d1d5db"], [1, "#d1d5db"]],
                 showscale=False,
                 text=merged.name,
+                customdata=merged.region_id,
                 hovertemplate="%{text}: нет данных<extra></extra>",
             )
         )
@@ -278,13 +283,22 @@ elif page == "Карта России":
                 locations=valid.region_id,
                 z=valid.value,
                 text=valid.name,
+                customdata=valid.region_id,
                 colorscale="Blues",
                 colorbar_title=indicator["unit"],
                 hovertemplate="%{text}: %{z}<extra></extra>",
             )
         )
         fig.update_geos(fitbounds="locations", visible=False)
-        st.plotly_chart(fig, use_container_width=True)
+        def select_on_map():
+            points = st.session_state['regional_map']['selection']['points']
+            if points:
+                selected_region = points[0].get('location') or points[0].get('customdata')
+                if selected_region in region_names:
+                    st.session_state['profile_region'] = selected_region
+                    st.session_state['page'] = 'Паспорт региона'
+
+        st.plotly_chart(fig, use_container_width=True, key='regional_map', on_select=select_on_map)
         st.caption(f"{year} · {indicator['unit']} · Серый цвет: нет данных")
     else:
         st.info(

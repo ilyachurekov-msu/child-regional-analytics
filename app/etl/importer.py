@@ -10,6 +10,8 @@ from sqlalchemy import select, text
 from app.config import settings
 from app.etl.normalize import normalize_region, number, source_identifier
 from app.models.entities import Batch, Indicator, QualityIssue, Region, Source, Value
+from app.models.entities import SourceAlias
+from app.services.source_identity import canonical_source_uuid
 
 PARSER_VERSION = "1.1.0"
 FIELDS = {
@@ -116,6 +118,13 @@ def import_file(
         )
         session.add(source)
         session.flush()
+    canonical = canonical_source_uuid(source.source_type, source.url)
+    alias = session.get(SourceAlias, canonical)
+    if alias and alias.legacy_source_id != source.source_id:
+        raise ValueError('Canonical source collision; explicit reconciliation required')
+    if not alias:
+        session.add(SourceAlias(canonical_source_id=canonical, legacy_source_id=source.source_id,
+                                method_version='media-compatible-1.0.0'))
     previous = session.scalar(
         select(Batch).where(
             Batch.source_id == source.source_id,

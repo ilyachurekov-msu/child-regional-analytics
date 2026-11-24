@@ -10,7 +10,7 @@ def main():
     root = Path("shared-contracts/src/navigator_shared_contracts")
     root.mkdir(parents=True, exist_ok=True)
     hashes = {}
-    for name in ("regions.csv", "topics.json", "platform.schema.json"):
+    for name in ("regions.csv", "topics.json", "topics.csv", "platform.schema.json", "identity.py", "source.schema.json"):
         payload = Path("contracts", name).read_bytes().replace(b"\r\n", b"\n")
         (root / name).write_bytes(payload)
         hashes[name] = hashlib.sha256(payload).hexdigest()
@@ -18,10 +18,11 @@ def main():
         "version": "1.0.0",
         "platform_agreed": False,
         "status": "candidate, regional IDs retained pending cross-module reconciliation",
-        "source_uuid_namespace": str(NAMESPACE_URL),
+        "source_uuid_namespace": '72c4db98-6752-5fe0-a56d-af600628f13b',
+        'legacy_source_uuid_namespace': str(NAMESPACE_URL),
         "resources_sha256": hashes,
         "other_modules": {
-            "media": "incompatible IDs and source namespace",
+            "media": "read-only verified: numeric region IDs after migration0003; canonical source procedure aligned through aliases",
             "practices": "not available for comparison",
         },
     }

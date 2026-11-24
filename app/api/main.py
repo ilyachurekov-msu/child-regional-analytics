@@ -13,7 +13,7 @@ from app.services.export import export_rows
 
 app = FastAPI(
     title="Региональная аналитика",
-    version="0.1.0",
+    version="0.2.0",
     openapi_url="/api/v1/openapi.json",
     docs_url="/api/v1/docs",
     responses={
@@ -26,7 +26,7 @@ app = FastAPI(
 DB = Annotated[Session, Depends(get_session)]
 Limit = Annotated[int, Query(ge=1, le=1000)]
 Offset = Annotated[int, Query(ge=0)]
-Year = Annotated[int | None, Query(ge=2019, le=2100)]
+Year = Annotated[int | None, Query(ge=1900, le=2100)]
 
 
 @app.get("/api/v1/regional/indicator-metadata")
@@ -225,7 +225,7 @@ def comparison(
 
 @app.get("/api/v1/regional/deviations")
 def deviation_api(
-    session: DB, indicator_code: str, year: Annotated[int, Query(ge=2019, le=2100)]
+    session: DB, indicator_code: str, year: Annotated[int, Query(ge=1900, le=2100)]
 ):
     indicator = session.scalar(
         select(Indicator).where(Indicator.code == indicator_code)

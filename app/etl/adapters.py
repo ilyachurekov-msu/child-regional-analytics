@@ -79,12 +79,13 @@ def adapt_pdf(path, specification):
 def kemerovo_html(payload, specification):
     from app.etl.html_tables import publication_tables
 
-    if specification["region_id"] != "RU-42" or specification["years"] != [
+    supported = [
         2019,
         2020,
         2021,
         2022,
-    ]:
+    ]
+    if specification["region_id"] != "RU-42" or specification["years"] not in (supported, [2018] + supported):
         raise ValueError(
             "Unsupported region/year contract for Kemerovostat publication"
         )
@@ -157,6 +158,6 @@ def kemerovo_html(payload, specification):
                     data_status="official",
                 )
             )
-    if years != [2018, 2019, 2020, 2021, 2022] or len(result) != 20:
+    if years != [2018, 2019, 2020, 2021, 2022] or len(result) != 5 * len(specification['years']):
         raise ValueError("Changed all-population year coverage")
     return result

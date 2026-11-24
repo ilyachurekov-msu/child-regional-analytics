@@ -171,3 +171,11 @@ class QualityIssue(Base):
     issue_type: Mapped[str] = mapped_column(Text)
     description: Mapped[str] = mapped_column(Text)
     resolution_status: Mapped[str] = mapped_column(Text, default="open")
+
+
+class SourceAlias(Base):
+    __tablename__ = 'source_aliases'
+    __table_args__ = {'schema': 'regional'}
+    canonical_source_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    legacy_source_id: Mapped[UUID] = mapped_column(ForeignKey('core.sources.source_id'))
+    method_version: Mapped[str] = mapped_column(Text)
