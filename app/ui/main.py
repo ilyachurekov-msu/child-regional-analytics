@@ -290,7 +290,7 @@ elif page == "Карта России":
             )
         )
         fig.update_geos(fitbounds=False, visible=False, projection_type='mercator',
-                        projection_rotation_lon=-100, center_lon=0, center_lat=65,
+                        projection_rotation_lon=-100, center_lon=100, center_lat=65,
                         projection_scale=1.8)
         fig.update_layout(clickmode='event+select', height=560, margin=dict(l=0, r=0, t=10, b=10))
         def select_on_map():

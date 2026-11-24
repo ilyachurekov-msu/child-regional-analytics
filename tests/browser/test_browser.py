@@ -8,6 +8,7 @@ def test_seven_pages_and_screenshots(page):
     from playwright.sync_api import expect
 
     output = Path("test-results/screenshots")
+    page.set_viewport_size({'width': 1440, 'height': 1100})
     output.mkdir(parents=True, exist_ok=True)
     page.goto("http://localhost:8501")
     expect(

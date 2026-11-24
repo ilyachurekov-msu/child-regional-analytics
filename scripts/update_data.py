@@ -8,6 +8,7 @@ from pathlib import Path
 from uuid import uuid4
 import httpx
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from app.db import engine
 from app.etl.adapters import adapt_pdf, kemerovo_html
 from app.etl.importer import import_file
@@ -122,8 +123,8 @@ def main():
             state_path.write_text(
                 json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8"
             )
-    except (httpx.HTTPError, ValueError, OSError) as exc:
-        report.update(status="failed", error=str(exc))
+    except (httpx.HTTPError, ValueError, OSError, SQLAlchemyError) as exc:
+        report.update(status="failed", error=str(exc) if isinstance(exc, ValueError) else type(exc).__name__)
     finally:
         report_path = folder / "latest-update-report.json"
         (folder / ('update-' + report['run_id'] + '.json')).write_text(
